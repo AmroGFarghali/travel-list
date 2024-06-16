@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 export default function App() {
   const [items, setItems] = useState([]);
-  console.log(items);
+  const [packedItems, setPackedItems] = useState([]);
   return (
     <>
       <Logo />
       <Form setItems={setItems} />
-      <PackingList items={items} setItems={setItems} />
+      <PackingList
+        setPackedItems={setPackedItems}
+        items={items}
+        setItems={setItems}
+        packedItems={packedItems}
+      />
+      <Stats items={items} packedItems={packedItems} />
     </>
   );
 }
@@ -60,13 +66,20 @@ const Form = ({ setItems }) => {
     </form>
   );
 };
-const PackingList = ({ items, setItems }) => {
+const PackingList = ({ packedItems, items, setItems, setPackedItems }) => {
   const handleCheck = (id) => {
     setItems((currItems) =>
       currItems.map((item) =>
         item.id === id ? { ...item, checked: !item.checked } : item
       )
     );
+    const packedItem = packedItems?.find((item) => item?.id === id);
+    const itemIPack = items.find((item) => item?.id === id);
+    packedItem
+      ? setPackedItems((currItems) =>
+          currItems.filter((currItem) => currItem !== packedItem)
+        )
+      : setPackedItems((currItems) => [...currItems, itemIPack]);
   };
   const handleDelete = (id) => {
     setItems((currItems) => currItems.filter((item) => item.id !== id));
@@ -105,4 +118,14 @@ const PackingList = ({ items, setItems }) => {
     </>
   );
 };
-const Stats = () => {};
+const Stats = ({ items, packedItems }) => {
+  return (
+    <div className="stats">
+      {" "}
+      <p>
+        You have {items.length} on your list, and you already packed{" "}
+        {packedItems.length} ( {(packedItems.length / items.length) * 100}%)
+      </p>
+    </div>
+  );
+};
