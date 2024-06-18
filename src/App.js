@@ -84,6 +84,10 @@ const PackingList = ({ packedItems, items, setItems, setPackedItems }) => {
   const handleDelete = (id) => {
     setItems((currItems) => currItems.filter((item) => item.id !== id));
   };
+
+  const handleClear = () => {
+    setItems((currItems) => []);
+  };
   return (
     <>
       <div className="list">
@@ -112,7 +116,7 @@ const PackingList = ({ packedItems, items, setItems, setPackedItems }) => {
             <option value="input">Sort by input order</option>
             <option value="name">Sort by name</option>
           </select>
-          <button>Clear list</button>
+          <button onClick={handleClear}>Clear list</button>
         </div>
       </div>
     </>
@@ -124,7 +128,8 @@ const Stats = ({ items, packedItems }) => {
       {" "}
       <p>
         You have {items.length} on your list, and you already packed{" "}
-        {packedItems.length} ( {(packedItems.length / items.length) * 100}%)
+        {packedItems.length} ( {(packedItems.length / items.length) * 100 || 0}
+        %)
       </p>
     </div>
   );
