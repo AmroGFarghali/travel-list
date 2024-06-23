@@ -3,19 +3,29 @@ import { useTravelListFeatures } from "./features";
 
 export default function PackingList() {
   const { items, setItems } = useTravelStore();
-  const { handleCheck, handleClear, handleDelete } = useTravelListFeatures();
+
+  const {
+    selectedSortMethod: [selectedSortMethod, setSelectedSortMethod],
+    sortedItems,
+    handleSort,
+    handleCheck,
+    handleClear,
+    handleDelete,
+  } = useTravelListFeatures();
+
   return (
     <>
       <div className="list">
         <ul>
-          {items.map((item) => (
+          {sortedItems.map((item) => (
             <li key={item.id}>
               <input
                 onChange={() => {
                   handleCheck(item.id);
                 }}
                 type="checkbox"
-              ></input>
+                checked={item.checked}
+              />
               <p
                 style={{
                   textDecoration: item.checked ? "line-through" : "none",
@@ -28,9 +38,10 @@ export default function PackingList() {
           ))}
         </ul>
         <div className="actions">
-          <select defaultValue="input">
+          <select value={selectedSortMethod} onChange={handleSort}>
             <option value="input">Sort by input order</option>
             <option value="name">Sort by name</option>
+            <option value="packed">Sort by packed order</option>
           </select>
           <button onClick={handleClear}>Clear list</button>
         </div>
